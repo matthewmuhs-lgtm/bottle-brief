@@ -1,0 +1,9 @@
+{
+  "name": "Maverick's Bottle Brief",
+  "short_name": "Bottle Brief",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f3fb",
+  "theme_color": "#6b4fa8"
+}

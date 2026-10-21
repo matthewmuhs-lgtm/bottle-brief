@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Bottle Brief">
+<meta name="theme-color" content="#6b4fa8">
+<title>Maverick's Bottle Brief</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <h1>Maverick's Bottle Brief</h1>
+    <button id="signout" class="link hidden" type="button">Sign out</button>
+  </header>
+
+  <!-- Sign-in -->
+  <section id="auth" class="card hidden">
+    <form id="emailForm">
+      <p class="muted">Sign in with your email. We'll send you a 6-digit code.</p>
+      <label class="field">Email
+        <input id="email" type="email" autocomplete="email" required>
+      </label>
+      <button class="primary" type="submit">Send code</button>
+    </form>
+    <form id="codeForm" class="hidden">
+      <p class="muted">Enter the code sent to <span id="sentTo"></span>.</p>
+      <label class="field">Code
+        <input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+      </label>
+      <button class="primary" type="submit">Sign in</button>
+      <button id="resend" class="link" type="button">Use a different email</button>
+    </form>
+  </section>
+
+  <!-- Main app -->
+  <div id="app" class="hidden">
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-view="today" role="tab" type="button">Today</button>
+      <button class="tab" data-view="trends" role="tab" type="button">Trends</button>
+    </nav>
+
+    <!-- Today -->
+    <section id="viewToday">
+      <div class="card">
+        <div class="label">Last bottle</div>
+        <div id="lastAgo" class="big">—</div>
+        <div id="lastDetail" class="sub"></div>
+      </div>
+
+      <div class="card">
+        <div class="label">Today</div>
+        <div class="row between baseline">
+          <div id="todayCount" class="mid">0 bottles</div>
+          <div id="todayOz" class="mid">0 fl oz</div>
+        </div>
+      </div>
+
+      <button id="logBtn" class="primary big-btn" type="button">+ Log bottle</button>
+
+      <div class="label spaced">Today's bottles <span class="muted">(tap to edit)</span></div>
+      <div id="todayList" class="list card flush"></div>
+
+      <div class="row between">
+        <button id="undoBtn" class="link" type="button">Undo last</button>
+        <span id="status" class="status"></span>
+      </div>
+    </section>
+
+    <!-- Trends -->
+    <section id="viewTrends" class="hidden">
+      <div class="seg" role="group" aria-label="Period">
+        <button class="segBtn active" data-period="week" type="button">Week</button>
+        <button class="segBtn" data-period="month" type="button">Month</button>
+      </div>
+      <p id="rangeLabel" class="muted small"></p>
+
+      <div class="card">
+        <div class="label">Fl oz per day</div>
+        <div id="chart" class="chart" aria-label="Fl oz per day"></div>
+        <div id="chartLabels" class="chartLabels"></div>
+        <div id="avgLine" class="sub"></div>
+      </div>
+
+      <div class="card">
+        <div class="label">Time of day <span class="muted">(bottles per hour)</span></div>
+        <div id="heat" class="heat" aria-label="Time of day"></div>
+      </div>
+
+      <div class="label spaced">Daily history <span class="muted">(tap a day)</span></div>
+      <div id="history" class="list card flush"></div>
+    </section>
+  </div>
+</main>
+
+<!-- Add / edit bottle -->
+<div id="sheetWrap" class="sheetWrap hidden" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet">
+    <div class="row between">
+      <h2 id="sheetTitle">Log bottle</h2>
+      <button id="sheetClose" class="link" type="button" aria-label="Close">Close</button>
+    </div>
+    <form id="bottleForm">
+      <div class="label">Type</div>
+      <div class="seg" role="group" aria-label="Bottle type">
+        <button class="segBtn" data-type="breast_milk" type="button">Breast milk</button>
+        <button class="segBtn" data-type="formula" type="button">Formula</button>
+        <button class="segBtn" data-type="mixed" type="button">Mixed</button>
+      </div>
+
+      <div id="singleAmt" class="field">
+        <label>Amount (fl oz)
+          <div class="stepper">
+            <button type="button" class="step" data-step="-0.25" aria-label="Less">−</button>
+            <input id="oz" type="number" inputmode="decimal" min="0" max="32" step="0.25" value="4">
+            <button type="button" class="step" data-step="0.25" aria-label="More">+</button>
+          </div>
+        </label>
+      </div>
+
+      <div id="mixedAmt" class="hidden">
+        <label class="field">Breast milk (fl oz)
+          <input id="bmOz" type="number" inputmode="decimal" min="0" max="32" step="0.25" value="2">
+        </label>
+        <label class="field">Formula (fl oz)
+          <input id="fmOz" type="number" inputmode="decimal" min="0" max="32" step="0.25" value="2">
+        </label>
+      </div>
+
+      <label class="field">Time
+        <input id="when" type="datetime-local" required>
+      </label>
+      <p class="muted small">Defaults to now. Change it to log a feed you missed.</p>
+
+      <p id="formError" class="error hidden"></p>
+      <button class="primary big-btn" type="submit">Save</button>
+      <button id="deleteBtn" class="danger hidden" type="button">Delete this bottle</button>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden" role="status"></div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
