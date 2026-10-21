@@ -314,36 +314,37 @@ function undoLast() {
   toast('Bottle removed.');
 }
 
-// ---------- auth ----------
-async function sendCode(e) {
+// ---------- auth (email + password) ----------
+async function signIn(e) {
   e.preventDefault();
-  pendingEmail = $('email').value.trim();
-  const { error } = await sb.auth.signInWithOtp({ email: pendingEmail, options: { shouldCreateUser: true } });
-  if (error) { toast(`Could not send code: ${error.message}`); return; }
-  $('sentTo').textContent = pendingEmail;
-  $('emailForm').classList.add('hidden');
-  $('codeForm').classList.remove('hidden');
-  $('code').focus();
+  const email = $('email').value.trim();
+  const password = $('password').value;
+  const { error } = await sb.auth.signInWithPassword({ email, password });
+  if (error) {
+    const msg = /confirm/i.test(error.message)
+      ? 'Confirm your email first: tap the link in the confirmation email.'
+      : 'Email or password not recognized.';
+    toast(msg);
+  }
 }
 
-async function verifyCode(e) {
-  e.preventDefault();
-  const token = $('code').value.trim();
-  const { error } = await sb.auth.verifyOtp({ email: pendingEmail, token, type: 'email' });
-  if (error) toast(`Code not accepted: ${error.message}`);
-}
-
-function resetAuthForms() {
-  $('codeForm').classList.add('hidden');
-  $('emailForm').classList.remove('hidden');
-  $('code').value = '';
+async function createAccount() {
+  const email = $('email').value.trim();
+  const password = $('password').value;
+  if (!email || password.length < 8) {
+    toast('Enter your email and a password of at least 8 characters.');
+    return;
+  }
+  const { error } = await sb.auth.signUp({ email, password });
+  if (error) { toast(`Could not create account: ${error.message}`); return; }
+  $('password').value = '';
+  $('authNote').textContent = 'Account created. Tap the link in the confirmation email, then sign in here.';
 }
 
 // ---------- wiring ----------
 function bind() {
-  $('emailForm').addEventListener('submit', sendCode);
-  $('codeForm').addEventListener('submit', verifyCode);
-  $('resend').addEventListener('click', resetAuthForms);
+  $('loginForm').addEventListener('submit', signIn);
+  $('createBtn').addEventListener('click', createAccount);
   $('signout').addEventListener('click', async () => { await sb.auth.signOut(); });
 
   document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => {

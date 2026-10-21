@@ -20,21 +20,17 @@
 
   <!-- Sign-in -->
   <section id="auth" class="card hidden">
-    <form id="emailForm">
-      <p class="muted">Sign in with your email. We'll send you a 6-digit code.</p>
+    <form id="loginForm">
       <label class="field">Email
         <input id="email" type="email" autocomplete="email" required>
       </label>
-      <button class="primary" type="submit">Send code</button>
-    </form>
-    <form id="codeForm" class="hidden">
-      <p class="muted">Enter the code sent to <span id="sentTo"></span>.</p>
-      <label class="field">Code
-        <input id="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" required>
+      <label class="field">Password
+        <input id="password" type="password" autocomplete="current-password" minlength="8" required>
       </label>
       <button class="primary" type="submit">Sign in</button>
-      <button id="resend" class="link" type="button">Use a different email</button>
+      <button id="createBtn" class="link" type="button">Create account with these details</button>
     </form>
+    <p id="authNote" class="muted small">New here? Create an account, then tap the link in the confirmation email before signing in. Passwords need at least 8 characters.</p>
   </section>
 
   <!-- Main app -->
